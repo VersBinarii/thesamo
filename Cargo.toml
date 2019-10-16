@@ -1,0 +1,24 @@
+[package]
+name = "thesamo"
+version = "0.1.0"
+authors = ["Kris <kristhesavage@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+serde = "1.0"
+serde_derive = "1.0"
+serde_cbor = "0.9"
+tokio = "0.1.22"
+tokio-tcp = "0.1.3"
+futures = "0.1.29"
+toml = "0.5.3"
+clap = "2.33.0"
+sha3 = "0.8.2"
+
+[[bin]]
+name = "master"
+path = "src/master/main.rs"
+
+[[bin]]
+name = "minion"
+path = "src/minion/main.rs"
