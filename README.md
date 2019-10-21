@@ -4,6 +4,11 @@ This is improved version if [thesamo]() rewritten in Rust.
 ## About
 This tool allows to syncronize parts of the config files across remote servers. Enclose the part of config that needs to be syncronised in a "tag" and the tool will ensure that the parts of the files are similar across the machines.
 
+## Instalation
+
+TBD
+
+
 ## Configuration
 
 ``` toml
@@ -42,6 +47,18 @@ Part of config to be syncronised with other servers
 
 Rest of the file 
 ```
+## Usage
 
+On master:
+
+``` shell
+# master -c <path/to/config/file>
+```
+
+On minion:
+
+``` shell
+# minion -c <path/to/config/file>
+```
 
 
