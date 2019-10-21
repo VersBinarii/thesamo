@@ -51,7 +51,7 @@ impl Minion {
                 .unwrap();
             let mut buf_writer = BufWriter::new(file_to_write);
             match buf_writer.write_all(replaced_file.as_bytes()) {
-                Ok(_) => println!("{}", "Replaced"),
+                Ok(_) => {}
                 Err(e) => println!("{}", e),
             }
         }
@@ -72,7 +72,6 @@ pub fn listen(bind_address: &SocketAddr, minion: Minion) {
                     .and_then(|(_, bytes)| {
                         let packet_from_master: SyncFilePacket =
                             serde_cbor::from_slice(&bytes).unwrap();
-                        println!("Read bytes: [{:?}]", packet_from_master);
                         minion.handle_packet(packet_from_master);
                         Ok(())
                     })

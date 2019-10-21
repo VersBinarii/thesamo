@@ -12,6 +12,7 @@ pub struct Config {
     pub close_tag: String,
     pub network: Network,
     pub files: Vec<Files>,
+    pub polling_freq: Option<u32>,
 }
 
 #[derive(Deserialize, Debug)]

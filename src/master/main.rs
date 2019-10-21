@@ -3,6 +3,7 @@ use futures::future::Future;
 use sha3::{Digest, Sha3_256};
 use std::net::{IpAddr, SocketAddr};
 use std::path::Path;
+use std::{thread, time};
 use thesamo::configuration::Config;
 use thesamo::extractor::{extract_body_from_tags, FileTags};
 use thesamo::file::Files;
@@ -15,6 +16,7 @@ struct Master {
     files: Vec<Files>,
     address: SocketAddr,
     tags: FileTags,
+    polling_freq: u32,
 }
 
 impl Master {
@@ -33,6 +35,7 @@ impl Master {
                 files: config.files,
                 address,
                 tags: FileTags::new(&config.open_tag, &config.close_tag),
+                polling_freq: config.polling_freq.unwrap_or(60),
             };
 
             match master.check_files() {
@@ -81,7 +84,6 @@ impl Master {
 
             let client = TcpStream::connect(&self.address)
                 .and_then(move |stream| {
-                    println!("Connected: [{:?}]", stream);
                     let data_to_send = serde_cbor::to_vec(&packet).unwrap();
                     io::write_all(stream, data_to_send).then(|_| Ok(()))
                 })
@@ -111,10 +113,12 @@ fn main() {
         .get_matches();
 
     let config_path = matches.value_of("config").unwrap_or("./thesamo.toml");
-    println!("{}", config_path);
     let config = Config::new(Path::new(config_path));
-
     let master = Master::from_config(config).unwrap();
-    println!("{:?}", master);
-    master.monitor();
+
+    loop {
+        master.monitor();
+        let sleep_time = time::Duration::from_secs(master.polling_freq as u64);
+        thread::sleep(sleep_time);
+    }
 }
