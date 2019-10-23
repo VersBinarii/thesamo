@@ -1,4 +1,4 @@
-use crate::file::Files;
+use crate::file::ConfigFile;
 use serde_derive::Deserialize;
 use std::fs::File;
 use std::io::Read;
@@ -11,7 +11,7 @@ pub struct Config {
     pub open_tag: String,
     pub close_tag: String,
     pub network: Network,
-    pub files: Vec<Files>,
+    pub files: Vec<ConfigFile>,
     pub polling_freq: Option<u32>,
 }
 

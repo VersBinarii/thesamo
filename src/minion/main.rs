@@ -5,7 +5,7 @@ use std::net::{IpAddr, SocketAddr};
 use std::path::Path;
 use thesamo::configuration::Config;
 use thesamo::extractor::{replace_in_tags, FileTags};
-use thesamo::file::Files;
+use thesamo::file::ScanFile;
 use thesamo::SyncFilePacket;
 use tokio::io;
 use tokio::net::TcpListener;
@@ -13,7 +13,7 @@ use tokio::prelude::*;
 
 #[derive(Debug, Clone)]
 pub struct Minion {
-    files: Vec<Files>,
+    files: Vec<ScanFile>,
     tags: FileTags,
 }
 
@@ -21,7 +21,7 @@ impl Minion {
     pub fn from_config(config: Config) -> Self {
         if config.minion {
             return Self {
-                files: config.files,
+                files: config.files.into_iter().map(From::from).collect(),
                 tags: FileTags::new(&config.open_tag, &config.close_tag),
             };
         } else {
@@ -38,7 +38,7 @@ impl Minion {
             .find(|&e| e.path.file_name() == packet.path.file_name())
         {
             let file_content =
-                Files::read_file(&file.path).expect("Failed to read the file");
+                file.read_file().expect("Failed to read the file");
             let replaced_file =
                 replace_in_tags(&file_content, &packet.blocks, &self.tags)
                     .expect("Error replacing the file content.");
